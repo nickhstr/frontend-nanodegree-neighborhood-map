@@ -1,10 +1,27 @@
-function initMap() {
-  var mapDiv = document.getElementById('map');
-  var map = new google.maps.Map(mapDiv, {
-    center: {lat: 37.7733, lng: -122.4367},
-    zoom: 12
+//======== MODEL ========//
+
+var Business = function(name, address, img, rating, latLong) {
+  this.name = name;
+  this.address = address;
+  this.img = img;
+  this.rating = rating;
+  this.latLong = {
+    lat: latLong.latitude,
+    lng: latLong.longitude
+  };
+};
+
+var businesses = [];
+
+function addMarker(business) {
+  var marker = new google.maps.Marker({
+    position: business.latLong,
+    map: map
   });
+  markers.push(marker);
 }
+
+var markers = [];
 
 /**
  * Generates a random number and returns it as a string for OAuthentication
@@ -13,6 +30,8 @@ function initMap() {
 function nonce_generate() {
   return (Math.floor(Math.random() * 1e12).toString());
 }
+
+var busNames = [];
 
 var yelp_url = 'https://api.yelp.com/v2/search/';
 
@@ -34,12 +53,20 @@ var yelp_url = 'https://api.yelp.com/v2/search/';
     var settings = {
       url: yelp_url,
       data: parameters,
-      cache: true,                // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
+      cache: true,                // This prevents jQuery's cache-busting parameter "_=23489489749837".
       dataType: 'jsonp',
       success: function(results) {
         // Do stuff with results
         for (var i = 0; i < results.businesses.length; i++) {
-        	console.log(results.businesses[i].name);
+          var name = results.businesses[i].name;
+          var address = results.businesses[i].location.address[0];
+          var img = results.businesses[i].image_url;
+          var rating = results.businesses[i].rating;
+          var latLong = results.businesses[i].location.coordinate;
+          businesses.push(new Business(name, address, img, rating, latLong));
+          console.log(businesses[i]);
+
+          addMarker(businesses[i]);
         }
       },
       fail: function() {
@@ -50,3 +77,15 @@ var yelp_url = 'https://api.yelp.com/v2/search/';
 
     // Send AJAX query via jQuery library.
     $.ajax(settings);
+
+
+//======== VIEW-MODEL ========//
+var map;
+
+function initMap() {
+  var mapDiv = document.getElementById('map');
+  map = new google.maps.Map(mapDiv, {
+    center: {lat: 37.7733, lng: -122.4367},
+    zoom: 12
+  });
+}
