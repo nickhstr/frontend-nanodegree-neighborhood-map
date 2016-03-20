@@ -30,8 +30,6 @@ var ViewModel = function() {
         };
     };
 
-    var businesses = [];
-
     function addMarker(business) {
         var marker = new google.maps.Marker({
             position: business.latLong,
@@ -84,13 +82,13 @@ var ViewModel = function() {
                 var img = results.businesses[i].image_url;
                 var rating = results.businesses[i].rating;
                 var latLong = results.businesses[i].location.coordinate;
-                businesses.push(new Business(name, address, img, rating, latLong));
+                self.businesses.push(new Business(name, address, img, rating, latLong));
 
-                addMarker(businesses[i]);
+                addMarker(self.businesses()[i]);
             }
-            businesses.forEach(function(business) {
+            /*businesses.forEach(function(business) {
                 self.businesses.push(business);
-            });
+            });*/
         },
         fail: function() {
             // Do stuff on fail
