@@ -9,3 +9,10 @@ html, body {
   height: 100%;
   background-color: #ccc;
 }
+
+.list {
+	position: fixed;
+	top: 50px;
+	left: 20px;
+	z-index: 10;
+}
