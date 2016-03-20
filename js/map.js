@@ -99,6 +99,6 @@ var ViewModel = function() {
     // Send AJAX query via jQuery library.
     $.ajax(settings);
 
-}
+};
 
 ko.applyBindings(ViewModel());

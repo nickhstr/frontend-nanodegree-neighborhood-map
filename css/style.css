@@ -11,8 +11,19 @@ html, body {
 }
 
 .list {
-	position: fixed;
+	position: absolute;
 	top: 50px;
 	left: 20px;
 	z-index: 10;
+  height: 400px;
+  border: 1px solid black;
+  overflow: auto;
+}
+
+.businesses {
+  list-style: none;
+}
+
+.business {
+  padding: 5px;
 }
