@@ -4,6 +4,8 @@
 
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+		<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 		<script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 		<script src="bower_components/oauth-signature/dist/oauth-signature.js"></script>
@@ -12,9 +14,16 @@
 
 	<body>
 		<div id="map"></div>
-		<div class="list">
+		<form class="search box-shad">
+			<input data-bind="value: search" placeholder="Search here!">
+			<button><i class="fa fa-search"></i></button>
+		</form>
+		<div class="list box-shad">
 			<ul class="businesses" data-bind="foreach: businesses">
-				<li class="business" data-bind="text: name"></li>
+				<li class="business">
+					<span class="name" data-bind="text: name"></span>
+					<span class="details" data-bind="text: category"></span>
+				</li>
 			</ul>
 		</div>
 		<script src="js/test.js"></script>

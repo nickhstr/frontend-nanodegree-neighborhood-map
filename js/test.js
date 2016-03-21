@@ -8,11 +8,14 @@ function initMap() {
             lat: 37.7733,
             lng: -122.4367
         },
-        zoom: 12
+        zoom: 13,
+        mapTypeControlOptions: {
+            position: google.maps.ControlPosition.LEFT_BOTTOM
+        }
     });
 }
 
-var Business = function(name, address, img, rating, latLong) {
+var Business = function(name, address, img, rating, latLong, category) {
     this.name = name;
     this.address = address;
     this.img = img;
@@ -21,6 +24,7 @@ var Business = function(name, address, img, rating, latLong) {
         lat: latLong.latitude,
         lng: latLong.longitude
     };
+    this.category = category;
 };
 
 function addMarker(business) {
@@ -79,7 +83,8 @@ var ViewModel = function() {
                 var img = results.businesses[i].image_url;
                 var rating = results.businesses[i].rating;
                 var latLong = results.businesses[i].location.coordinate;
-                self.businesses.push(new Business(name, address, img, rating, latLong));
+                var category = results.businesses[i].categories[0][0];
+                self.businesses.push(new Business(name, address, img, rating, latLong, category));
 
                 addMarker(self.businesses()[i]);
             }
@@ -91,6 +96,8 @@ var ViewModel = function() {
     };
 
     $.ajax(settings);
+
+    self.search = ko.observable("");
 };
 
 ko.applyBindings(new ViewModel());
