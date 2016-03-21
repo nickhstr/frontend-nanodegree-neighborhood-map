@@ -6,15 +6,17 @@ function initMap() {
     map = new google.maps.Map(mapDiv, {
         center: {
             lat: 37.7733,
-            lng: -122.4367
+            lng: -122.4167
         },
         zoom: 13,
         mapTypeControlOptions: {
             position: google.maps.ControlPosition.LEFT_BOTTOM
         }
     });
+    initApp();
 }
 
+function initApp() {
 var Business = function(name, address, img, rating, latLong, category) {
     this.name = name;
     this.address = address;
@@ -26,6 +28,8 @@ var Business = function(name, address, img, rating, latLong, category) {
     };
     this.category = category;
 };
+
+var businesses = ko.observableArray([]);
 
 function addMarker(business) {
     var marker = new google.maps.Marker({
@@ -62,42 +66,43 @@ var parameters = {
 var encodedSignature = oauthSignature.generate('GET', yelp_url, parameters, 'xQTSPiz7FAt8-cyI9m66L6hTtfI', '-AbNK3guQzneMaOBEqEeFwMVKcI');
 parameters.oauth_signature = encodedSignature;
 
+var settings = {
+    url: yelp_url,
+    data: parameters,
+    cache: true, // This prevents jQuery's cache-busting parameter "_=23489489749837".
+    dataType: 'jsonp',
+    success: function(results) {
+        // Do stuff with results
+        for (var i = 0; i < results.businesses.length; i++) {
+            var name = results.businesses[i].name;
+            var address = results.businesses[i].location.address[0];
+            var img = results.businesses[i].image_url;
+            var rating = results.businesses[i].rating;
+            var latLong = results.businesses[i].location.coordinate;
+            var category = results.businesses[i].categories[0][0];
+            businesses.push(new Business(name, address, img, rating, latLong, category));
+
+            addMarker(businesses()[i]);
+        }
+    },
+    fail: function() {
+        // Do stuff on fail
+        console.log('Not quite right');
+    }
+};
+
+$.ajax(settings);
+
 
 //======== VIEW-MODEL ========//
 
 var ViewModel = function() {
     var self = this;
 
-    self.businesses = ko.observableArray([]);
-
-    var settings = {
-        url: yelp_url,
-        data: parameters,
-        cache: true, // This prevents jQuery's cache-busting parameter "_=23489489749837".
-        dataType: 'jsonp',
-        success: function(results) {
-            // Do stuff with results
-            for (var i = 0; i < results.businesses.length; i++) {
-                var name = results.businesses[i].name;
-                var address = results.businesses[i].location.address[0];
-                var img = results.businesses[i].image_url;
-                var rating = results.businesses[i].rating;
-                var latLong = results.businesses[i].location.coordinate;
-                var category = results.businesses[i].categories[0][0];
-                self.businesses.push(new Business(name, address, img, rating, latLong, category));
-
-                addMarker(self.businesses()[i]);
-            }
-        },
-        fail: function() {
-            // Do stuff on fail
-            console.log('Not quite right');
-        }
-    };
-
-    $.ajax(settings);
+    self.businesses = businesses;
 
     self.search = ko.observable("");
 };
 
 ko.applyBindings(new ViewModel());
+}
