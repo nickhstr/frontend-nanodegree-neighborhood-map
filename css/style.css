@@ -60,7 +60,8 @@ button:focus {
 	top: 10px;
 	right: 10px;
 	z-index: 1;
-  height: 455px;
+  max-height: 455px;
+  width: 225px;
   overflow: auto;
   padding: 0;
   color: #000;
@@ -128,4 +129,8 @@ span {
 
 .rating {
   width: 100%;
+}
+
+.hidden {
+  display: none;
 }

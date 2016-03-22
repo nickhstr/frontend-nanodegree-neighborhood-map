@@ -16,7 +16,7 @@ function initMap() {
     initApp();
 }
 
-var Business = function(name, address, img, rating, latLong, category) {
+var Business = function(name, address, img, rating, latLong, category, match) {
     this.name = name;
     this.address = address;
     this.img = img;
@@ -26,6 +26,7 @@ var Business = function(name, address, img, rating, latLong, category) {
         lng: latLong.longitude
     };
     this.category = category;
+    this.match = match;
 };
 
 var businesses = ko.observableArray([]);
@@ -89,14 +90,15 @@ function initApp() {
                 var rating = results.businesses[i].rating;
                 var latLong = results.businesses[i].location.coordinate;
                 var category = results.businesses[i].categories[0][0];
-                businesses.push(new Business(name, address, img, rating, latLong, category));
+                var match = ko.observable(true);
+                businesses.push(new Business(name, address, img, rating, latLong, category, match));
 
                 addMarker(businesses()[i]);
             }
         },
         fail: function() {
             // Do stuff on fail
-            alert("Aw snap!\nThis app is temporarily unavailable.\nPlease try again later.");
+            alert('Aw snap!\nThis app is temporarily unavailable.\nPlease try again later.');
         }
     };
 
@@ -110,14 +112,32 @@ function initApp() {
 
         self.businesses = businesses;
 
-        self.search = ko.observable("");
-
-        self.alert = function() {
-            alert("It worked!");
-        };
+        self.search = ko.observable('');
 
         self.moreInfo = function(business) {
             business.infoWindow.open(map, business.marker);
+        };
+
+        self.submit = function() {
+            if (self.search() !== '') {
+                var words = self.search().toLowerCase().split(' ');
+
+                words.forEach(function(word) {
+                    self.businesses().forEach(function(business) {
+                        business.match(false);
+                        business.marker.setMap(null);
+                        if (business.name.toLowerCase().indexOf(word) !== -1 || business.category.toLowerCase().indexOf(word) !== -1) {
+                            business.match(true);
+                            business.marker.setMap(map);
+                        }
+                    });
+                });
+            } else if (self.search() === '') {
+                self.businesses().forEach(function(business) {
+                    business.match(true);
+                    business.marker.setMap(map);
+                });
+            }
         };
     };
 
