@@ -51,6 +51,10 @@ button:hover {
   color: #1e88e5;
 }
 
+button:focus {
+  outline: none;
+}
+
 .list {
 	position: absolute;
 	top: 10px;
@@ -96,4 +100,32 @@ span {
   -webkit-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.2);
   -moz-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.2);
   box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.2);
+}
+
+.info {
+  display: flex;
+  flex-wrap: wrap;
+  width: 300px;
+}
+
+.info p {
+  margin: 0;
+  padding: 2px;
+}
+
+.info-text {
+  width: 50%;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.bus-img {
+  width: 50%;
+  text-align: center;
+}
+
+.rating {
+  width: 100%;
 }
