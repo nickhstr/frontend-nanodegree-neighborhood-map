@@ -44,10 +44,14 @@ function addMarker(business) {
     marker.addListener('click', function() {
         infoWindow.open(map, marker);
     });
+
+    infoWindows.push(infoWindow);
     markers.push(marker);
 }
 
 var markers = [];
+
+var infoWindows = [];
 
 function initApp() {
     /**
@@ -114,6 +118,11 @@ function initApp() {
 
         self.alert = function() {
             alert("It worked!");
+        };
+
+        self.moreInfo = function(business) {
+            var index = self.businesses.indexOf(business);
+            infoWindows[index].open(map, markers[index]);
         };
     };
 
