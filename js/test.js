@@ -45,13 +45,9 @@ function addMarker(business) {
         infoWindow.open(map, marker);
     });
 
-    infoWindows.push(infoWindow);
-    markers.push(marker);
+    business.infoWindow = infoWindow;
+    business.marker = marker;
 }
-
-var markers = [];
-
-var infoWindows = [];
 
 function initApp() {
     /**
@@ -121,8 +117,7 @@ function initApp() {
         };
 
         self.moreInfo = function(business) {
-            var index = self.businesses.indexOf(business);
-            infoWindows[index].open(map, markers[index]);
+            business.infoWindow.open(map, business.marker);
         };
     };
 
