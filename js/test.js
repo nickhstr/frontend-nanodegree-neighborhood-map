@@ -34,7 +34,8 @@ var businesses = ko.observableArray([]);
 function addMarker(business) {
     var marker = new google.maps.Marker({
         position: business.latLong,
-        map: map
+        map: map,
+        animation: null
     });
     var infoWindow = new google.maps.InfoWindow({
         content: '<div class="info"><div class="info-text"><p class="title">' + business.name +
@@ -44,10 +45,22 @@ function addMarker(business) {
     });
     marker.addListener('click', function() {
         infoWindow.open(map, marker);
+        toggleBounce(marker);
+        setTimeout(function() {
+            marker.setAnimation(null);
+        }, 750);
     });
 
     business.infoWindow = infoWindow;
     business.marker = marker;
+}
+
+function toggleBounce(m) {
+    if (m.getAnimation() !== null) {
+        m.setAnimation(null);
+    } else {
+        m.setAnimation(google.maps.Animation.BOUNCE);
+    }
 }
 
 function initApp() {
@@ -116,6 +129,10 @@ function initApp() {
 
         self.moreInfo = function(business) {
             business.infoWindow.open(map, business.marker);
+            toggleBounce(business.marker);
+            setTimeout(function(){
+                business.marker.setAnimation(null);
+            }, 750);
         };
 
         self.submit = function() {
