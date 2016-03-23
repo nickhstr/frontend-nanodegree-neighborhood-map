@@ -55,18 +55,62 @@ button:focus {
   outline: none;
 }
 
+.yelp {
+  z-index: 1;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  height: 50px;
+  width: 112.5px;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  border-radius: 2px;
+}
+
+.yelp:hover {
+  cursor: pointer;
+  background: #ddd;
+}
+
+.toggle {
+  position: relative;
+  top: 17px;
+  left: 17px;
+  height: 16px;
+  float: left;
+  transition: transform 0.5s ease;
+}
+
+.toggleRotate {
+  transform: rotate(180deg);
+}
+
+.logo {
+  position: relative;
+  top: 12.5px;
+  right: 12.5px;
+  height: 25px;
+  float: right;
+}
+
 .list {
 	position: absolute;
-	top: 10px;
+	top: 70px;
 	right: 10px;
 	z-index: 1;
-  max-height: 455px;
+  max-height: 399px;
   width: 225px;
   overflow: auto;
   padding: 0;
   color: #000;
   background: #fff;
   border-radius: 2px;
+  transition: transform 0.5s ease;
+}
+
+.hidden {
+  transform: translate(500px);
 }
 
 ul {
@@ -129,8 +173,4 @@ span {
 
 .rating {
   width: 100%;
-}
-
-.hidden {
-  display: none;
 }

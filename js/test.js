@@ -156,6 +156,16 @@ function initApp() {
                 });
             }
         };
+
+        self.listHidden = ko.observable(false);
+
+        self.collapse = function() {
+            if (self.listHidden()) {
+                self.listHidden(false);
+            } else {
+                self.listHidden(true);
+            }
+        };
     };
 
     ko.applyBindings(new ViewModel());

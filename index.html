@@ -25,7 +25,12 @@
 			<input data-bind="value: search" placeholder="Search here!">
 			<button type="submit" data-bind="click: submit"><i class="fa fa-search"></i></button>
 		</form>
-		<div class="list box-shad">
+		<div class="yelp box-shad" data-bind="click: collapse">
+			
+			<img src="img/yelp.svg" class="logo">
+			<img src="img/arrows.svg" class="toggle" data-bind="css: {toggleRotate: listHidden}">
+		</div>
+		<div class="list box-shad" data-bind="css: {hidden: listHidden}">
 			<ul class="businesses" data-bind="foreach: businesses">
 				<li class="business" data-bind="click: $parent.moreInfo, visible: match">
 					<span class="name" data-bind="text: name"></span>
@@ -33,6 +38,7 @@
 				</li>
 			</ul>
 		</div>
+
 		<script src="js/test.js"></script>
 	</body>
 
