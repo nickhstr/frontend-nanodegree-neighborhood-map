@@ -63,6 +63,8 @@ function toggleBounce(m) {
     }
 }
 
+var display = (window.innerWidth <= 450);
+
 function initApp() {
     /**
      * Generates a random number and returns it as a string for OAuthentication
@@ -157,7 +159,7 @@ function initApp() {
             }
         };
 
-        self.listHidden = ko.observable(false);
+        self.listHidden = ko.observable(display);
 
         self.collapse = function() {
             if (self.listHidden()) {
