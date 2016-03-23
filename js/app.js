@@ -1,6 +1,9 @@
 //======== MODEL ========//
+
+// Declare map variable globally, to make it available in every function
 var map;
 
+// Callback function for Google Maps api, to initialize the map
 function initMap() {
     var mapDiv = document.getElementById('map');
     map = new google.maps.Map(mapDiv, {
@@ -13,9 +16,12 @@ function initMap() {
             position: google.maps.ControlPosition.LEFT_BOTTOM
         }
     });
+
+    // Load the app after map has loaded, beginning with the Yelp ajax call
     initApp();
 }
 
+// Class for Business object, AKA Yelp place/location
 var Business = function(name, address, img, rating, latLong, category, match) {
     this.name = name;
     this.address = address;
@@ -29,20 +35,25 @@ var Business = function(name, address, img, rating, latLong, category, match) {
     this.match = match;
 };
 
+// Observable array for Business objects
 var businesses = ko.observableArray([]);
 
+// Creates new marker, based on the properties of a Business object
 function addMarker(business) {
+    // The marker
     var marker = new google.maps.Marker({
         position: business.latLong,
         map: map,
         animation: null
     });
+    // An info window for the marker
     var infoWindow = new google.maps.InfoWindow({
         content: '<div class="info"><div class="info-text"><p class="title">' + business.name +
-                '</p><p class="address">' + business.address[0] + '</p><p class="address">' + business.address[1] +
-                '</p><p class="address">' + business.address[2] + '</p></div><div class="bus-img"><img src="' + business.img +
-                '" alt="Picture of Place"></div><p class="rating">' + business.rating + ' out of 5</p> </div>'
+            '</p><p class="address">' + business.address[0] + '</p><p class="address">' + business.address[1] +
+            '</p><p class="address">' + business.address[2] + '</p></div><div class="bus-img"><img src="' + business.img +
+            '" alt="Picture of Place"></div><p class="rating">' + business.rating + ' out of 5</p> </div>'
     });
+    // Click listener which opens the info window and animates the marker
     marker.addListener('click', function() {
         infoWindow.open(map, marker);
         toggleBounce(marker);
@@ -51,10 +62,12 @@ function addMarker(business) {
         }, 750);
     });
 
+    // Add the info window and marker to the current Business object
     business.infoWindow = infoWindow;
     business.marker = marker;
 }
 
+// Animation function for marker, especially useful for setTimeout
 function toggleBounce(m) {
     if (m.getAnimation() !== null) {
         m.setAnimation(null);
@@ -63,13 +76,13 @@ function toggleBounce(m) {
     }
 }
 
+// Declared globally to check display size from within a function
 var display = (window.innerWidth <= 450);
 
 function initApp() {
-    /**
-     * Generates a random number and returns it as a string for OAuthentication
-     * @return {string}
-     */
+    // Shout out to Mark N (Udacity Coach) for the oauth parameters code below
+
+    // Generates a random number and returns it as a string for OAuthentication
     function nonce_generate() {
         return (Math.floor(Math.random() * 1e12).toString());
     }
@@ -83,9 +96,9 @@ function initApp() {
         oauth_timestamp: Math.floor(Date.now() / 1000),
         oauth_signature_method: 'HMAC-SHA1',
         oauth_version: '1.0',
-        callback: 'cb',
+        callback: 'cb', // This is crucial to include for jsonp implementation in AJAX or else the oauth-signature will be wrong
         location: 'San+Francisco,+CA',
-        sort: '2' // This is crucial to include for jsonp implementation in AJAX or else the oauth-signature will be wrong.
+        sort: '2' // Sorts results by highest rated
     };
 
     var encodedSignature = oauthSignature.generate('GET', yelp_url, parameters, 'xQTSPiz7FAt8-cyI9m66L6hTtfI', '-AbNK3guQzneMaOBEqEeFwMVKcI');
@@ -94,7 +107,7 @@ function initApp() {
     var settings = {
         url: yelp_url,
         data: parameters,
-        cache: true, // This prevents jQuery's cache-busting parameter "_=23489489749837".
+        cache: true, // This prevents jQuery's cache-busting parameter "_=23489489749837"
         dataType: 'jsonp',
         success: function(results) {
             // Do stuff with results
@@ -117,40 +130,52 @@ function initApp() {
         }
     };
 
+    // jQuery ajax call for Yelp data
     $.ajax(settings);
 
 
-//======== VIEW-MODEL ========//
+    //======== VIEW-MODEL ========//
 
     var ViewModel = function() {
+        // To avoid issues with using 'this' within methods
         var self = this;
 
+        // Set to previously defined 'businesses' observable array
         self.businesses = businesses;
 
+        // Holds the value in the search bar
         self.search = ko.observable('');
 
+        // When a business in list is clicked, this method opens its infowindow and animates its marker
         self.moreInfo = function(business) {
             business.infoWindow.open(map, business.marker);
             toggleBounce(business.marker);
-            setTimeout(function(){
+            setTimeout(function() {
                 business.marker.setAnimation(null);
             }, 750);
         };
 
+        // Filters list and markers based on search value when search is submitted
         self.submit = function() {
             if (self.search() !== '') {
+                // Split the search query up
                 var words = self.search().toLowerCase().split(' ');
 
+                // For each word in search query
                 words.forEach(function(word) {
+                    // For each business in the businesses list
                     self.businesses().forEach(function(business) {
+                        // Hide each business and its marker
                         business.match(false);
                         business.marker.setMap(null);
+                        // If a word in the search query matches a word in the business name or cateogory, the business and its marker are visible
                         if (business.name.toLowerCase().indexOf(word) !== -1 || business.category.toLowerCase().indexOf(word) !== -1) {
                             business.match(true);
                             business.marker.setMap(map);
                         }
                     });
                 });
+            // If the search query is empty, make every list item and marker visible
             } else if (self.search() === '') {
                 self.businesses().forEach(function(business) {
                     business.match(true);
@@ -159,8 +184,10 @@ function initApp() {
             }
         };
 
+        // Obvservable used for switching visibility of entire list, triggered by click of div.yelp
         self.listHidden = ko.observable(display);
 
+        // Method for showing/hiding entire list
         self.collapse = function() {
             if (self.listHidden()) {
                 self.listHidden(false);
@@ -169,6 +196,6 @@ function initApp() {
             }
         };
     };
-
+    // Bind ViewModel to index.html
     ko.applyBindings(new ViewModel());
 }

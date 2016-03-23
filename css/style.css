@@ -2,7 +2,7 @@ html, body {
   width: 100%;
   height: 100%;
   margin: 0;
-  font-family: 'Roboto';
+  font-family: 'Roboto', Helvetica;
   overflow: hidden;
 }
 
@@ -151,16 +151,16 @@ span {
 .info {
   display: flex;
   flex-wrap: wrap;
-  width: 300px;
+  width: 260px;
 }
 
 .info p {
   margin: 0;
-  padding: 2px;
+  padding: 2px 5px;
 }
 
 .info-text {
-  width: 50%;
+  width: 160px;
 }
 
 .title {
@@ -168,8 +168,12 @@ span {
 }
 
 .bus-img {
-  width: 50%;
+  width: 100px;
   text-align: center;
+}
+
+.bus-img img {
+  width: 100px;
 }
 
 .rating {
