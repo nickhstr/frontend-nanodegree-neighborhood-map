@@ -3,6 +3,11 @@
 // Declare map variable globally, to make it available in every function
 var map;
 
+// Google Maps error function
+function mapError() {
+    alert('Aww snap!\nGoogle Maps is temporarily unavailable.\nPlease try again later.');
+}
+
 // Callback function for Google Maps api, to initialize the map
 function initMap() {
     var mapDiv = document.getElementById('map');
@@ -55,11 +60,14 @@ function addMarker(business) {
     });
     // Click listener which opens the info window and animates the marker
     marker.addListener('click', function() {
+        businesses().forEach(function(business) {
+            business.infoWindow.close();
+        });
         infoWindow.open(map, marker);
         toggleBounce(marker);
         setTimeout(function() {
             marker.setAnimation(null);
-        }, 750);
+        }, 700);
     });
 
     // Add the info window and marker to the current Business object
@@ -104,13 +112,19 @@ function initApp() {
     var encodedSignature = oauthSignature.generate('GET', yelp_url, parameters, 'xQTSPiz7FAt8-cyI9m66L6hTtfI', '-AbNK3guQzneMaOBEqEeFwMVKcI');
     parameters.oauth_signature = encodedSignature;
 
+    // Timeout for error handling.
+    var yelpRequestTimeout = setTimeout(function(){
+        alert('Aw snap!\nYelp is temporarily unavailable.\nPlease try again later.');
+    }, 8000);
+
     var settings = {
         url: yelp_url,
         data: parameters,
         cache: true, // This prevents jQuery's cache-busting parameter "_=23489489749837"
         dataType: 'jsonp',
         success: function(results) {
-            // Do stuff with results
+            clearTimeout(yelpRequestTimeout);
+
             for (var i = 0; i < results.businesses.length; i++) {
                 var name = results.businesses[i].name;
                 var address = results.businesses[i].location.display_address;
@@ -123,10 +137,6 @@ function initApp() {
 
                 addMarker(businesses()[i]);
             }
-        },
-        fail: function() {
-            // Do stuff on fail
-            alert('Aw snap!\nThis app is temporarily unavailable.\nPlease try again later.');
         }
     };
 
