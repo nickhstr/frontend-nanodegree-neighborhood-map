@@ -158,11 +158,7 @@ function initApp() {
 
         // When a business in list is clicked, this method opens its infowindow and animates its marker
         self.moreInfo = function(business) {
-            business.infoWindow.open(map, business.marker);
-            toggleBounce(business.marker);
-            setTimeout(function() {
-                business.marker.setAnimation(null);
-            }, 750);
+            google.maps.event.trigger(business.marker, 'click');
         };
 
         // Filters list and markers based on search value when search is submitted
