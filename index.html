@@ -26,7 +26,7 @@
 		</div>
 		<div class="list box-shad" data-bind="css: {hidden: listHidden}">
 			<ul class="businesses" data-bind="foreach: businesses">
-				<li class="business" data-bind="click: $parent.moreInfo, visible: match">
+				<li class="business" data-bind="click: $parent.hideList, visible: match">
 					<span class="name" data-bind="text: name"></span>
 					<span class="details" data-bind="text: category"></span>
 				</li>

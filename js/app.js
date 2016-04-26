@@ -201,6 +201,15 @@ function initApp() {
                 self.listHidden(true);
             }
         };
+
+        self.hideList = function(business) {
+            if (display) {
+                self.moreInfo(business);
+                self.collapse();
+            } else {
+                self.moreInfo(business);
+            }
+        };
     };
     // Bind ViewModel to index.html
     ko.applyBindings(new ViewModel());
